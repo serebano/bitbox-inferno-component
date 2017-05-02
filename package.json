@@ -1,11 +1,14 @@
 {
     "name": "bitbox-inferno-component",
     "version": "1.0.0",
-    "main": "lib/index.js",
+    "main": "lib/main.js",
     "license": "MIT",
+    "homepage": "http://serebano.github.io/bitbox-inferno-component",
     "scripts": {
         "start": "react-scripts start",
         "build": "react-scripts build",
+        "build-example": "cp src/example.js src/index.js && react-scripts build",
+        "build-package": "cp src/main.js src/index.js && react-scripts build",
         "test": "react-scripts test --env=jsdom",
         "eject": "react-scripts eject",
         "predeploy": "npm run build",

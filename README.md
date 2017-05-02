@@ -1,6 +1,7 @@
 # bitbox-inferno-component
 https://serebano.github.io/bitbox-inferno-component/
 
+
 ```js
 /** @jsx h */
 import Component, { render } from "bitbox-inferno-component"
@@ -57,4 +58,9 @@ render(Component(App, {
 	}
 }), "#root")
 
+```
+
+```
+yarn install
+yarn start
 ```

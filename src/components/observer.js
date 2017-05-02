@@ -7,9 +7,10 @@ function Observer(observer, h) {
             <div
                 style={{
                     background: "rgba(226,192,141,0.2)",
+                    fontFamily: 'Consolas, "Liberation Mono", Menlo, Courier, monospace',
                     opacity: 0.7,
-                    padding: 8,
-                    fontSize: 13
+                    padding: 16,
+                    fontSize: 12
                 }}>
                 <div><b>{observer.name}</b></div>
                 <code style={{ display: "block", marginTop: 8 }}>

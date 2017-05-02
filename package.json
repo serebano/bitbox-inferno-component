@@ -22,9 +22,10 @@
         "inferno-create-element": "^3.1.0"
     },
     "devDependencies": {
-        "gh-pages": "^0.12.0",
-        "react-scripts": "0.9.5",
         "babel-cli": "^6.24.1",
-        "babel-plugin-inferno": "^3.2.0"
+        "babel-plugin-inferno": "^3.2.0",
+        "gh-pages": "^0.12.0",
+        "inferno-devtools": "^3.1.0",
+        "react-scripts": "0.9.5"
     }
 }

@@ -47,6 +47,7 @@ function App(props, h) {
 }
 
 Component.debug = true
+Component.devtools = true
 
 render(
     Component(App, {

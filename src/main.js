@@ -1,4 +1,4 @@
-import bitbox, { map } from "bitbox"
+import bitbox from "bitbox"
 import { is } from "bitbox/utils"
 import CreateElement from "inferno-create-element"
 import Component from "inferno-component"
@@ -38,7 +38,7 @@ export default function HOC(component, target) {
 }
 
 export function createComponent([mapping, view]) {
-    const component = bitbox([map, mapping, HOC.map], [view, createElement])
+    const component = bitbox.create(mapping, HOC.map)(target => view(target, createElement))
     const Component = HOC.observable ? statefull(component) : stateless(component)
 
     Component.displayName = `component(${view.displayName || view.name})`

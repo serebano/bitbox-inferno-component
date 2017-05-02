@@ -1,0 +1,26 @@
+{
+    "name": "bitbox-inferno-component",
+    "version": "1.0.0",
+    "main": "lib/index.js",
+    "license": "MIT",
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test --env=jsdom",
+        "eject": "react-scripts eject",
+        "predeploy": "npm run build",
+        "deploy": "gh-pages -d build",
+        "compile": "babel src --out-dir lib"
+    },
+    "dependencies": {
+        "inferno": "^3.0.5",
+        "inferno-component": "^3.0.5",
+        "inferno-create-element": "^3.1.0"
+    },
+    "devDependencies": {
+        "gh-pages": "^0.12.0",
+        "react-scripts": "0.9.5",
+        "babel-cli": "^6.24.1",
+        "babel-plugin-inferno": "^3.2.0"
+    }
+}

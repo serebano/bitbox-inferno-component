@@ -33,14 +33,19 @@ export default function HOC(component, target) {
 export function createComponent(input) {
     const [mapping = {}, view] = is.func(input) ? [input.map, input] : input
 
-    const component = bitbox.create(mapping, {
+    const map = (view.map = bitbox.map(mapping, {
+        //args: ["args"],
         props: ["props"],
         state: ["context", "state"],
         signals: ["context", "signals"],
         observer: ["observer"]
-    })(props => view(props, createElement))
+    }))
 
-    const Component = HOC.observable ? statefull(component) : stateless(component)
+    const box = (view.box = bitbox(map, function component(props) {
+        return view(props, createElement)
+    }))
+
+    const Component = HOC.observable ? statefull(box, map) : stateless(box)
     Component.displayName = `component(${view.displayName || view.name})`
 
     return Component
@@ -60,13 +65,14 @@ function stateless(component) {
     }
 }
 
-function statefull(component) {
+function statefull(component, map) {
     return class BBComponent extends Component {
         componentWillMount() {
-            this.observer = bitbox.observe(this, function(target, render) {
-                return render ? component(target) : target.observer && target.forceUpdate()
+            this.component = component
+            this.observer = bitbox.observe(render => {
+                return render ? component(this) : this.observer && this.forceUpdate()
             })
-            this.observer.mapping = component.$[0]
+
             this.observer.name = BBComponent.displayName
         }
         componentWillUnmount() {
@@ -77,7 +83,7 @@ function statefull(component) {
         }
         render() {
             return HOC.debug === true || this.props.debug === true
-                ? Observer(this.observer, createElement)
+                ? Observer(this, createElement)
                 : this.observer.run(true)
         }
     }

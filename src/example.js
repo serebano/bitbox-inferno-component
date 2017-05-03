@@ -1,7 +1,7 @@
 /** @jsx h */
 import Component, { render } from "./main"
 
-const Hello = [
+export const Hello = [
     function bit({ state, args }, { set, toUpper }) {
         return {
             value: state.name,
@@ -18,7 +18,7 @@ const Hello = [
     }
 ]
 
-const Counter = [
+export const Counter = [
     function({ state }, { set, inc, dec }) {
         return {
             count: state.count(String),
@@ -37,7 +37,7 @@ const Counter = [
     }
 ]
 
-function App(props, h) {
+export function App(props, h) {
     return (
         <section style={{ fontFamily: "monospace" }}>
             <Hello />
@@ -46,15 +46,14 @@ function App(props, h) {
     )
 }
 
+export const store = {
+    state: {
+        name: "Scooby Doo",
+        count: 0
+    }
+}
+
 Component.debug = true
 Component.devtools = true
 
-render(
-    Component(App, {
-        state: {
-            name: "Scooby Doo",
-            count: 0
-        }
-    }),
-    "#root"
-)
+render(Component(App, store), "#root")

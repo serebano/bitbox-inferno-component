@@ -4,7 +4,7 @@ import Component, { render } from "./main"
 export const Hello = [
     function bit({ state, args }, { set, toUpper }) {
         return {
-            value: state.name,
+            value: state.name(),
             onInput: set(state.name, args[0].target.value(toUpper))
         }
     },
@@ -28,7 +28,7 @@ export const Counter = [
     },
     function Counter({ count, inc, dec }, h) {
         return (
-            <div style={{ padding: 16, marginTop: 16, background: "#eaffea" }}>
+            <div style={{ padding: 16, marginTop: 16, background: "#f4f4f4" }}>
                 <h1 style={{ margin: "0 0 8px 0" }}>count = {count}</h1>
                 <button onClick={inc}>+ inc</button>
                 <button onClick={dec}>- dec</button>
@@ -56,4 +56,4 @@ export const store = {
 Component.debug = true
 Component.devtools = true
 
-render(Component(App, store), "#root")
+export const app = render(Component(App, store), "#root")

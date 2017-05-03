@@ -12,10 +12,15 @@ export default function HOC(component, target) {
     if (target) {
         return createElement(
             class BBContainer extends Component {
+                constructor(props) {
+                    super(props)
+                    this.app = {}
+                }
                 getChildContext() {
                     return {
                         state: bitbox.observable(this.props.state),
-                        signals: this.props.signals
+                        signals: this.props.signals,
+                        app: this.app
                     }
                 }
                 render() {
@@ -34,7 +39,6 @@ export function createComponent(input) {
     const [mapping = {}, view] = is.func(input) ? [input.map, input] : input
 
     const map = (view.map = bitbox.map(mapping, {
-        //args: ["args"],
         props: ["props"],
         state: ["context", "state"],
         signals: ["context", "signals"],
@@ -45,7 +49,7 @@ export function createComponent(input) {
         return view(props, createElement)
     }))
 
-    const Component = HOC.observable ? statefull(box, map) : stateless(box)
+    const Component = HOC.observable ? statefull(box, map, view) : stateless(box)
     Component.displayName = `component(${view.displayName || view.name})`
 
     return Component
@@ -65,15 +69,17 @@ function stateless(component) {
     }
 }
 
-function statefull(component, map) {
+function statefull(component, map, view) {
     return class BBComponent extends Component {
         componentWillMount() {
+            this.context.app[view.name] = bitbox({ map, box: ["observer"] })(this)
+            this.map = map
             this.component = component
             this.observer = bitbox.observe(render => {
                 return render ? component(this) : this.observer && this.forceUpdate()
             })
 
-            this.observer.name = BBComponent.displayName
+            this.observer.name = view.name
         }
         componentWillUnmount() {
             this.observer.off()
@@ -92,4 +98,6 @@ function statefull(component, map) {
 export const render = (component, selector) => {
     HOC.devtools && require("inferno-devtools")
     Inferno.render(component, document.querySelector(selector))
+
+    return component.children.app
 }

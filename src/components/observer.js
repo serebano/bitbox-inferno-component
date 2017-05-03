@@ -20,42 +20,44 @@ function Observer(com, h) {
         <div>
             <div
                 style={{
-                    borderBottom: "1px solid rgba(255,255,255,0.3)",
+                    borderBottom: "1px solid rgba(226,192,141,0.9)",
                     transition: "opacity 0.3s ease",
-                    opacity: observer.keys ? 1 : 0.3
+                    opacity: observer.keys ? 1 : 0.8
                 }}>
                 {component}
             </div>
             <div
                 style={{
-                    borderTop: "1px solid rgba(226,192,141,0.8)",
+                    borderBottom: "1px solid rgba(255,255,255,1)",
                     fontFamily: 'Consolas, "Liberation Mono", Menlo, Courier, monospace',
-                    background: observer.keys
-                        ? "rgba(234, 255, 234, 0.38)"
-                        : "rgba(226,192,141,0.1)",
-                    opacity: 0.7,
-                    padding: 16,
-                    fontSize: 12
+                    background: "rgba(226,192,141,0.1)",
+                    transition: "opacity 0.3s",
+                    opacity: observer.keys ? 1 : 0.2,
+                    padding: 8,
+                    lineHeight: 1.4,
+                    fontSize: 13
                 }}>
                 <div>
-                    <b>{observer.name}</b>
+                    <b style={{ color: "#c00" }}>{"<"}{observer.name} {" />"}</b>
+                    {" "}
+                    <span>runs(<b>{changed}</b>) </span>
                     <button onClick={toggle}>
                         {observer.status}
                     </button>
+                    <code style={{ display: "block", marginTop: 4 }}>
+                        <pre style={{ margin: 0 }}>
+                            [{changes.map(path => path.join(".")).join(", ")}]
+                        </pre>
+                    </code>
+
                     <pre style={{ margin: 0 }}>
-                        {String(com.component)}
+                        {com.map.toString()}
                     </pre>
                 </div>
-                <code style={{ display: "block", marginTop: 8 }}>
+                <code style={{ display: "block", marginTop: 4 }}>
                     <pre style={{ margin: 0 }}>
                         <span>keys(<b>{paths.length}</b>) </span>
-                        {JSON.stringify(paths.map(path => path.join(".")), null, 0)}
-                    </pre>
-                </code>
-                <code style={{ display: "block", marginTop: 8 }}>
-                    <pre style={{ margin: 0 }}>
-                        <span>runs(<b>{changed}</b>) </span>
-                        {JSON.stringify(changes.map(path => path.join(".")), null, 0)}
+                        [{paths.map(path => path.join(".")).join(", ")}]
                     </pre>
                 </code>
             </div>

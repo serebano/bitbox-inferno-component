@@ -1,20 +1,16 @@
 /** @jsx h */
 
-function Observer(com, h) {
-    const observer = com.observer
-    observer.status = !observer.keys ? "On" : "Off"
-
+function Observer({ observer }, h) {
+    const { paths, changes, changed } = observer
+    const status = !observer.keys ? "On" : "Off"
     const toggle = () => {
         if (observer.keys) {
             observer.off()
-            com.forceUpdate()
+            observer.run(false)
         } else {
             observer.on()
         }
     }
-
-    const component = observer.run(true)
-    const { paths, changes, changed } = observer
 
     return (
         <div>
@@ -24,7 +20,7 @@ function Observer(com, h) {
                     transition: "opacity 0.3s ease",
                     opacity: observer.keys ? 1 : 0.8
                 }}>
-                {component}
+                {observer.run(true)}
             </div>
             <div
                 style={{
@@ -38,25 +34,29 @@ function Observer(com, h) {
                     fontSize: 13
                 }}>
                 <div>
-                    <b style={{ color: "#c00" }}>{"<"}{observer.name} {" />"}</b>
-                    {" "}
-                    <span>runs(<b>{changed}</b>) </span>
-                    <button onClick={toggle}>
-                        {observer.status}
-                    </button>
-                    <code style={{ display: "block", marginTop: 4 }}>
-                        <pre style={{ margin: 0 }}>
-                            [{changes.map(path => path.join(".")).join(", ")}]
-                        </pre>
-                    </code>
+                    <span>
 
-                    <pre style={{ margin: 0 }}>
-                        {com.map.toString()}
-                    </pre>
+                        <span style={{ color: "#c00" }}>
+
+                            <b>{"<"}{observer.name}</b>
+                            (
+                            <span style={{ color: "#444", opacity: 0.7, margin: "0 2px" }}>
+                                {changed}
+                            </span>
+                            )
+                        </span>
+                        {" "}
+                        {changes.map(path => `${path.join(".")}`).join(" ")}
+                        {" "}
+                        <b style={{ color: "#c00" }}>{" />"}</b>
+                    </span>
+                    {" "}
+                    <button onClick={toggle}>
+                        {status}
+                    </button>
                 </div>
                 <code style={{ display: "block", marginTop: 4 }}>
                     <pre style={{ margin: 0 }}>
-                        <span>keys(<b>{paths.length}</b>) </span>
                         [{paths.map(path => path.join(".")).join(", ")}]
                     </pre>
                 </code>

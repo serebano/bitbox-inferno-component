@@ -1,103 +1,31 @@
-import bitbox from "bitbox"
-import { is } from "bitbox/utils"
-import CreateElement from "inferno-create-element"
 import Component from "inferno-component"
-import Inferno from "inferno"
-import Observer from "./components/observer"
+import createElement from "./createElement"
+import createComponent from "./createComponent"
+import render from "./render"
 
-HOC.debug = false
-HOC.observable = true
+export default function InfernoComponent(component, context) {
+    if (arguments.length === 1) return createComponent(component)
 
-export default function HOC(component, target) {
-    if (target) {
-        return createElement(
-            class BBContainer extends Component {
-                constructor(props) {
-                    super(props)
-                    this.app = {}
-                }
-                getChildContext() {
-                    return {
-                        state: bitbox.observable(this.props.state),
-                        signals: this.props.signals,
-                        app: this.app
-                    }
-                }
-                render() {
-                    return this.props.children
-                }
-            },
-            target,
-            createElement(component, target.props)
-        )
-    }
+    createComponent.debug = InfernoComponent.debug
 
-    return createComponent(component)
+    return createElement(
+        class ContextProvider extends Component {
+            getChildContext() {
+                return this.props.context
+            }
+            render() {
+                return this.props.children
+            }
+        },
+        { context },
+        createElement(component)
+    )
 }
 
-export function createComponent(input) {
-    const [mapping = {}, view] = is.func(input) ? [input.map, input] : input
-
-    const map = (view.map = bitbox.map(mapping, {
-        props: ["props"],
-        state: ["context", "state"],
-        signals: ["context", "signals"],
-        observer: ["observer"]
-    }))
-
-    const box = (view.box = bitbox(map, function component(props) {
-        return view(props, createElement)
-    }))
-
-    const Component = HOC.observable ? statefull(box, map, view) : stateless(box)
-    Component.displayName = `component(${view.displayName || view.name})`
-
-    return Component
+export function component(com, ...args) {
+    return target =>
+        (args.length
+            ? render(InfernoComponent(com, target), ...args)
+            : InfernoComponent(com, target))
 }
-
-export function createElement(tag, ...rest) {
-    return is.array(tag)
-        ? CreateElement(createComponent(tag), ...rest)
-        : is.func(tag) && is.undefined(tag.prototype.render)
-              ? CreateElement(createComponent(tag), ...rest)
-              : CreateElement(tag, ...rest)
-}
-
-function stateless(component) {
-    return function StatelessComponent(props, context) {
-        return component({ props, context })
-    }
-}
-
-function statefull(component, map, view) {
-    return class BBComponent extends Component {
-        componentWillMount() {
-            this.context.app[view.name] = bitbox({ map, box: ["observer"] })(this)
-            this.map = map
-            this.component = component
-            this.observer = bitbox.observe(render => {
-                return render ? component(this) : this.observer && this.forceUpdate()
-            })
-
-            this.observer.name = view.name
-        }
-        componentWillUnmount() {
-            this.observer.off()
-        }
-        shouldComponentUpdate() {
-            return false
-        }
-        render() {
-            return HOC.debug === true || this.props.debug === true
-                ? Observer(this, createElement)
-                : this.observer.run(true)
-        }
-    }
-}
-
-export const render = (component, selector) => {
-    HOC.devtools && require("inferno-devtools")
-    Inferno.render(component, document.querySelector(selector))
-
-    return component.children.app
-}
+export { createComponent, createElement, render }

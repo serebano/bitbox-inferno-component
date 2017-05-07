@@ -1,7 +1,7 @@
 /** @jsx h */
 import bitbox, { observable } from "bitbox"
 import Inferno from "../app"
-import One from "../one"
+import One from "./one"
 import Counter from "./components/counter"
 
 export const store = {
